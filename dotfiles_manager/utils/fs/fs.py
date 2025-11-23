@@ -2,18 +2,18 @@ import mimetypes
 import pathlib
 
 from dotfiles_manager.utils.exception import InvalidDotfile
+from dotfiles_manager.utils.fs.base import DotfileFS
+from dotfiles_manager.utils.fs.log import Log
 from dotfiles_manager.utils.fs.shell import InterfaceFS
 from dotfiles_manager.utils.style import style
 from dotfiles_manager.utils.template import template_file
-from dotfiles_manager.utils.fs.base import DotfileFS
-from dotfiles_manager.utils.fs.log import Log
 
 
 class Copy(DotfileFS):
     def validate(self, fs: InterfaceFS, flags):
         if fs.resolve(self.src) == fs.resolve(self.dest):
             raise InvalidDotfile(
-                f"'{style.error(str(self.src))}' already linked"
+                f"'{style.error(str(self.src))}' already linked", self
             )
         super().validate(fs, flags)
 
@@ -113,4 +113,4 @@ class Chown(DotfileFS):
 
     def __call__(self, fs: InterfaceFS, flags) -> None:
         fs.chown(self.src, self.user)
-        Log.Debug(f"Change owner' {style.info(str(self.dest))}'")(fs, flags)
+        Log.Debug(f"change owner' {style.info(str(self.dest))}'")(fs, flags)

@@ -1,19 +1,19 @@
 from collections.abc import Generator
 
+from dotfiles_manager.utils.config import DOTFILE_IGNORE_FOLDER, WHOAMI
+from dotfiles_manager.utils.fs.condition import Condition, Exists, IsDir
+from dotfiles_manager.utils.fs.flags import ForceYes
 from dotfiles_manager.utils.fs.fs import (
+    Chown,
     Copy,
     Delete,
     DotfileFS,
-    WriteFile,
     Symlink,
-    Chown,
+    WriteFile,
 )
-from dotfiles_manager.utils.fs.condition import Exists, IsDir, Condition
-from dotfiles_manager.utils.fs.path import sanitize_source_path, EnumFile
-from dotfiles_manager.utils.fs.flags import ForceYes
-from dotfiles_manager.utils.config import DOTFILE_IGNORE_FOLDER, WHOAMI
-from dotfiles_manager.utils.style import style
 from dotfiles_manager.utils.fs.log import Log
+from dotfiles_manager.utils.fs.path import EnumFile, sanitize_source_path
+from dotfiles_manager.utils.style import style
 
 
 def link_command(srcs, flags) -> Generator[DotfileFS]:

@@ -1,17 +1,18 @@
+import abc
+
 from dotfiles_manager.utils.exception import InvalidDotfile, PermissionDotfile
 from dotfiles_manager.utils.fs.shell import InterfaceFS
 from dotfiles_manager.utils.style import style
-import abc
 
 
 class DotfileInterface(abc.ABC):
     @abc.abstractmethod
     def validate(self, fs: InterfaceFS, flags):
-        raise NotImplemented
+        raise NotImplementedError
 
     @abc.abstractmethod
     def __call__(self, fs: InterfaceFS, flags):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class DotfileFS(DotfileInterface):
@@ -20,17 +21,18 @@ class DotfileFS(DotfileInterface):
         self.dest = dest
 
     def validate(self, fs: InterfaceFS, flags):
-        if fs.exists(self.src) and not any((fs.is_file(self.src), fs.is_dir(self.src))):
-            raise InvalidDotfile(
-                f"invalid type of file '{style.error(str(self.src))}'"
-            )
-        if not fs.can_read(self.src):
+        if fs.exists(self.src):
+            if not any((fs.is_file(self.src), fs.is_dir(self.src))):
+                raise InvalidDotfile(
+                    f"invalid type of file '{style.error(str(self.src))}'", self
+                )
+            if not fs.can_read(self.src):
+                raise PermissionDotfile(
+                    f"Read Permission denied: '{style.error(str(self.src))}'", self
+                )
+        if fs.exists(self.dest) and not fs.can_write(self.dest):
             raise PermissionDotfile(
-                f"Permission denied: '{style.error(str(self.src))}'"
-            )
-        if not fs.can_write(self.dest):
-            raise PermissionDotfile(
-                f"Permission denied: '{style.error(str(self.dest))}'"
+                f"Write Permission denied: '{style.error(str(self.dest))}'", self
             )
 
 

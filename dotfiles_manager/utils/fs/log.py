@@ -1,7 +1,8 @@
-from dotfiles_manager.utils.fs.base import DotfileExtra
-from dotfiles_manager.utils.fs.fs import DotfileFS, InterfaceFS
-import sys
 import logging
+import sys
+
+from dotfiles_manager.utils.fs.base import DotfileExtra, DotfileFS
+from dotfiles_manager.utils.fs.shell import InterfaceFS
 
 
 class Message(DotfileExtra):
