@@ -10,13 +10,6 @@ from dotfiles_manager.utils.template import template_file
 
 
 class Copy(DotfileFS):
-    def validate(self, fs: InterfaceFS, flags):
-        if fs.resolve(self.src) == fs.resolve(self.dest):
-            raise InvalidDotfile(
-                f"'{style.error(str(self.src))}' already linked", self
-            )
-        super().validate(fs, flags)
-
     def __call__(self, fs: InterfaceFS, flags):
         if fs.is_file(self.src):
             fs.mkdir(self.dest.parent)
@@ -25,9 +18,7 @@ class Copy(DotfileFS):
         elif fs.is_dir(self.src):
             fs.mkdir(self.dest.parent)
             fs.copydir(self.src, self.dest)
-            Log.Info(f"copy directory '{style.info(str(self.dest))}'")(
-                fs, flags
-            )
+            Log.Info(f"copy directory '{style.info(str(self.dest))}'")(fs, flags)
 
 
 class Symlink(DotfileFS):
@@ -57,24 +48,20 @@ class Symlink(DotfileFS):
         elif fs.is_dir(self.src):
             fs.mkdir(self.dest.parent)
             fs.symlinkdir(self.src, self.dest)
-            Log.Info(f"symlink directory '{style.info(str(self.dest))}'")(
-                fs, flags
-            )
+            Log.Info(f"symlink directory '{style.info(str(self.dest))}'")(fs, flags)
 
 
 class Delete(DotfileFS):
     def __init__(self, src: pathlib.Path):
-        super().__init__(src, src)
+        super().__init__(src)
 
     def __call__(self, fs: InterfaceFS, flags):
         if fs.is_file(self.src):
-            fs.removefile(self.dest)
-            Log.Info(f"delete file '{style.info(str(self.dest))}'")(fs, flags)
+            fs.removefile(self.src)
+            Log.Info(f"delete file '{style.info(str(self.src))}'")(fs, flags)
         elif fs.is_dir(self.src):
-            fs.removedir(self.dest)
-            Log.Info(f"delete directory' {style.info(str(self.dest))}'")(
-                fs, flags
-            )
+            fs.removedir(self.src)
+            Log.Info(f"delete directory' {style.info(str(self.src))}'")(fs, flags)
 
 
 class WriteFile(DotfileFS):

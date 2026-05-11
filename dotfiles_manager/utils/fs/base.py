@@ -16,7 +16,7 @@ class DotfileInterface(abc.ABC):
 
 
 class DotfileFS(DotfileInterface):
-    def __init__(self, src, dest):
+    def __init__(self, src, dest=None):
         self.src = src
         self.dest = dest
 
@@ -28,11 +28,17 @@ class DotfileFS(DotfileInterface):
                 )
             if not fs.can_read(self.src):
                 raise PermissionDotfile(
-                    f"Read Permission denied: '{style.error(str(self.src))}'", self
+                    f"Read Permission denied: '{style.error(str(self.src))}'",
+                    self,
                 )
-        if fs.exists(self.dest) and not fs.can_write(self.dest):
+        if (
+            self.dest is not None
+            and fs.exists(self.dest)
+            and not fs.can_write(self.dest)
+        ):
             raise PermissionDotfile(
-                f"Write Permission denied: '{style.error(str(self.dest))}'", self
+                f"Write Permission denied: '{style.error(str(self.dest))}'",
+                self,
             )
 
 

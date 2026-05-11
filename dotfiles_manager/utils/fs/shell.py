@@ -3,6 +3,7 @@ import io
 import pathlib
 import subprocess
 import tempfile
+
 from dotfiles_manager.utils.logger import logger
 
 
@@ -70,7 +71,7 @@ class Shell(InterfaceFS):
         if self.sudo:
             cmds.insert(0, "sudo")
 
-        logger.info("shell Command: %s", cmds)
+        logger.info("Shell Command: %s", cmds)
         result = subprocess.run(cmds, **kw)
         logger.info("Shell Command Result: %s", result.returncode)
         if check:
